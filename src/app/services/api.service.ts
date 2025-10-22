@@ -19,14 +19,14 @@ export interface ApiResponse {
   providedIn: 'root'
 })
 export class ApiService {
-  //private readonly API_URL = 'http://77.93.152.202:8080/analyze';
+  //private readonly API_URL = 'http://127.0.0.1:5000/analyze';
   private readonly API_URL = '/api/analyze';
 
   constructor(private http: HttpClient) { }
 
 analyzeVideo(file: File): Observable<ApiResponse> {
   const formData = new FormData();
-  // 👇 Cambia 'video' por 'file'
+  // Cambia 'video' por 'file'
   formData.append('file', file, file.name);
 
   return this.http.post<ApiResponse>(this.API_URL, formData).pipe(
