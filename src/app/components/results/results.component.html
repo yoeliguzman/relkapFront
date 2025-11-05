@@ -1,108 +1,89 @@
-<div class="max-w-6xl mx-auto mt-10 p-8">
-  <div class="bg-slate-850 rounded-xl p-8 shadow-xl">
+<div class="max-w-7xl mx-auto mt-8 p-6 text-gray-100">
+  <div class="bg-slate-800 rounded-2xl p-8 shadow-2xl shadow-blue-900/40">
     <!-- Botón de regresar -->
-    <div class="mb-6">
+    <div class="mb-8">
       <button
         (click)="goBack()"
-        class="flex items-center text-blue-400 hover:text-blue-300"
+        class="flex items-center text-blue-400 hover:text-blue-300 transition"
       >
         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
         </svg>
-        Volver a cargar video
+        Analizar otro video
       </button>
     </div>
 
-<!-- Loading spinner moderno -->
-<div *ngIf="!data" class="flex flex-col items-center justify-center min-h-screen bg-slate-900 p-8">
-  <div class="relative">
-    <!-- Spinner exterior -->
-    <div class="animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-blue-500"></div>
-    <!-- Spinner interior con efecto de onda -->
-    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-pulse">
-      <div class="h-12 w-12 bg-blue-600 rounded-full opacity-70"></div>
-    </div>
-  </div>
+    <!-- Resultados -->
+    <div *ngIf="data" class="space-y-10">
 
-  <div class="mt-8 text-center">
-    <h3 class="text-xl font-semibold text-white mb-2">Analizando tu video...</h3>
-    <p class="text-gray-400 mb-4">Nuestro sistema está extrayendo transcripción, sentimiento y temas clave.</p>
-    <div class="w-full max-w-md mx-auto bg-gray-700 rounded-full h-2">
-      <div class="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full animate-pulse" style="width: 60%"></div>
-    </div>
-    <p class="text-gray-500 text-sm mt-2">Esto puede tomar hasta 15 segundos según el tamaño del video.</p>
-  </div>
-</div>
-
-    <!-- Resultados (solo si hay datos) -->
-    <div *ngIf="data" class="space-y-8">
       <!-- Transcripción -->
-      <div>
-        <h3 class="text-xl font-semibold mb-4 text-blue-300">Transcripción</h3>
-        <div class="bg-slate-750 p-6 rounded-lg">
-          <p class="text-gray-200 leading-relaxed">{{ data.transcript }}</p>
-        </div>
+      <div class="bg-slate-700/60 p-6 rounded-xl border border-slate-600/40">
+        <h3 class="text-xl font-semibold mb-4 text-sky-400">Transcripción</h3>
+        <p class="text-gray-200 leading-relaxed whitespace-pre-line">{{ data.transcript }}</p>
       </div>
 
       <!-- Resumen -->
-      <div>
-        <h3 class="text-xl font-semibold mb-4 text-blue-300">Resumen</h3>
-        <div class="bg-slate-750 p-6 rounded-lg">
-          <p class="text-gray-200 leading-relaxed">{{ data.resumen }}</p>
+      <div class="bg-slate-700/60 p-6 rounded-xl border border-slate-600/40">
+        <h3 class="text-xl font-semibold mb-4 text-sky-400">Resumen</h3>
+        <p class="text-gray-200 leading-relaxed">{{ data.resumen }}</p>
+      </div>
+
+      <!-- Gráficas en la misma fila -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Palabras clave -->
+        <div class="bg-slate-700/60 p-6 rounded-xl border border-slate-600/40">
+          <h3 class="text-lg font-semibold text-sky-400 mb-4">Palabras Clave</h3>
+          <div style="height: 320px;">
+            <canvas baseChart [type]="'bar'" [data]="barChartData" [options]="barChartOptions"></canvas>
+          </div>
+        </div>
+
+        <!-- Sentimiento general -->
+        <div class="bg-slate-700/60 p-6 rounded-xl border border-slate-600/40">
+          <h3 class="text-lg font-semibold text-sky-400 mb-4">Sentimiento General</h3>
+          <div class="flex justify-center items-center" style="height: 320px;">
+            <canvas baseChart [type]="'pie'" [data]="pieChartData" [options]="pieChartOptions"></canvas>
+          </div>
         </div>
       </div>
 
-      <!-- Sentimiento -->
-      <div>
-        <h3 class="text-xl font-semibold mb-4 text-blue-300">Análisis de Sentimiento</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="bg-slate-750 p-6 rounded-lg">
-            <h4 class="font-medium mb-2">Resultado</h4>
-            <span
-              [class.text-green-400]="data.sentimiento.label === 'positivo'"
-              [class.text-red-400]="data.sentimiento.label === 'negativo'"
-              [class.text-yellow-400]="data.sentimiento.label === 'neutral'"
-              class="text-2xl font-bold capitalize"
-            >
-              {{ data.sentimiento.label }}
+      <!-- Evolución del Sentimiento (FULL WIDTH, altura reducida) -->
+      <div class="relative -mx-8 bg-slate-700/70 px-8 py-8 rounded-xl border border-slate-600/40">
+        <h3 class="text-lg font-semibold text-sky-400 mb-4">Evolución del Sentimiento</h3>
+        <div class="w-full" style="height: 225px;">
+          <canvas
+            baseChart
+            [type]="'line'"
+            [data]="lineChartData"
+            [options]="{
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                x: { ticks: { color: '#9CA3AF' }, grid: { color: '#374151' } },
+                y: { ticks: { color: '#9CA3AF' }, grid: { color: '#374151' } }
+              },
+              plugins: {
+                legend: { labels: { color: '#E5E7EB' } }
+              }
+            }">
+          </canvas>
+        </div>
+      </div>
+
+      <!-- Temas -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-slate-700/60 p-6 rounded-xl border border-slate-600/40">
+          <h4 class="font-medium mb-3 text-sky-300">Tema Principal</h4>
+          <p class="text-gray-100 font-semibold text-lg">{{ data.tema }}</p>
+        </div>
+        <div class="bg-slate-700/60 p-6 rounded-xl border border-slate-600/40">
+          <h4 class="font-medium mb-3 text-sky-300">Temas Relacionados</h4>
+          <div class="flex flex-wrap gap-2">
+            <span *ngFor="let tema of data.temas_top3" class="px-3 py-1 bg-indigo-900/70 text-indigo-200 rounded-full text-sm">
+              {{ tema }}
             </span>
           </div>
-          <div class="bg-slate-750 p-6 rounded-lg">
-            <h4 class="font-medium mb-2">Confianza</h4>
-            <div class="w-full bg-gray-700 rounded-full h-2.5">
-              <div
-                class="bg-gradient-to-r from-blue-500 to-purple-500 h-2.5 rounded-full"
-                [style.width.%]="data.sentimiento.score * 100"
-              ></div>
-            </div>
-            <p class="text-gray-300 mt-2">{{ (data.sentimiento.score * 100).toFixed(1) }}%</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Palabras clave -->
-      <div>
-        <h3 class="text-xl font-semibold mb-4 text-blue-300">Palabras Clave</h3>
-        <div class="flex flex-wrap gap-2">
-          <span
-            *ngFor="let keyword of getKeywords()"
-            class="px-3 py-1 bg-blue-950 text-blue-200 rounded-full text-sm"
-          >
-            {{ keyword }}
-          </span>
-        </div>
-      </div>
-
-      <!-- Tema principal -->
-      <div>
-        <h3 class="text-xl font-semibold mb-4 text-blue-300">Tema Principal</h3>
-        <div class="flex flex-wrap gap-2">
-          <span
-            *ngFor="let topic of data.tema"
-            class="px-3 py-1 bg-purple-900 text-purple-200 rounded-full text-sm"
-          >
-            {{ topic }}
-          </span>
         </div>
       </div>
     </div>

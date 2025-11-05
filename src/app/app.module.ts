@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { UploadComponent } from './components/upload/upload.component';
 import { ResultsComponent } from './components/results/results.component';
 import { LoginComponent } from './components/login/login.component';
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { LoginComponent } from './components/login/login.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    NgChartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
