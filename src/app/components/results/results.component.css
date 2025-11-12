@@ -12,3 +12,8 @@ button {
 h3, h4 {
   letter-spacing: 0.3px;
 }
+.transcript-box {
+  max-height: 10em;
+  overflow-y: auto;
+  padding-right: 0.5rem; /* para que la barra no corte el texto */
+}

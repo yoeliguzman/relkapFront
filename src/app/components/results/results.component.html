@@ -20,7 +20,11 @@
       <!-- Transcripción -->
       <div class="bg-slate-700/60 p-6 rounded-xl border border-slate-600/40">
         <h3 class="text-xl font-semibold mb-4 text-sky-400">Transcripción</h3>
-        <p class="text-gray-200 leading-relaxed whitespace-pre-line">{{ data.transcript }}</p>
+        <div class="transcript-box overflow-y-auto">
+          <p class="text-gray-200 leading-relaxed whitespace-pre-line">
+            {{ data.transcript }}
+          </p>
+        </div>
       </div>
 
       <!-- Resumen -->
